@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eko Agent Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .feature-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #1677ff;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .button-demo {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            background: #1677ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .success { background: #52c41a; }
+        .warning { background: #faad14; }
+        .danger { background: #ff4d4f; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Eko Agent - Workflow Confirmation Feature Test</h1>
+    
+    <div class="feature-section">
+        <h2>✨ New Feature: AI Plan Confirmation</h2>
+        <p>The Eko Agent now includes an intelligent workflow confirmation system that allows users to review and modify AI-generated plans before execution.</p>
+        
+        <div class="highlight">
+            <strong>🎯 Key Improvements:</strong>
+            <ul>
+                <li><strong>Plan Review</strong> - AI generates a detailed execution plan that users can review</li>
+                <li><strong>Interactive Editing</strong> - Users can modify the plan directly in the interface</li>
+                <li><strong>Confirmation Flow</strong> - Three action buttons: Confirm, Apply Changes, or Cancel</li>
+                <li><strong>Safety Enhancement</strong> - Prevents unwanted automated actions</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="feature-section">
+        <h2>🔧 How It Works</h2>
+        <ol>
+            <li><strong>Input Task</strong> - Enter your natural language instruction (e.g., "Open Twitter, search for 'Fellou AI' and follow")</li>
+            <li><strong>AI Planning</strong> - The AI analyzes the task and generates a detailed execution plan</li>
+            <li><strong>Plan Display</strong> - The plan appears in a blue confirmation box with editable text area</li>
+            <li><strong>User Decision</strong> - Choose from three options:
+                <div style="margin: 10px 0;">
+                    <span class="button-demo success">✅ Confirm & Execute</span> - Proceed with the original plan
+                </div>
+                <div style="margin: 10px 0;">
+                    <span class="button-demo warning">✏️ Apply Changes</span> - Use your modified version
+                </div>
+                <div style="margin: 10px 0;">
+                    <span class="button-demo danger">❌ Cancel</span> - Stop the task entirely
+                </div>
+            </li>
+            <li><strong>Execution</strong> - The browser automation begins only after confirmation</li>
+        </ol>
+    </div>
+
+    <div class="feature-section">
+        <h2>🛠️ Technical Implementation</h2>
+        <p>The feature involves modifications to both the background script and sidebar UI:</p>
+        
+        <h3>Backend Changes (background.js):</h3>
+        <div class="code-block">
+// New message type for workflow confirmation
+chrome.runtime.sendMessage({
+  type: "workflow_confirmation",
+  workflow: e.workflow,
+  taskId: e.taskId
+});
+
+// Handle user responses
+"workflow_confirmed" == e.type
+  ? lv.continueExecution(e.workflow)
+  : "workflow_modified" == e.type
+    ? lv.updateWorkflow(e.workflow)
+    : ...
+        </div>
+
+        <h3>Frontend Changes (sidebar.js):</h3>
+        <div class="code-block">
+// New state for workflow management
+const [workflowData, setWorkflowData] = useState(null);
+const [isEditing, setIsEditing] = useState(false);
+const [workflowXml, setWorkflowXml] = useState("");
+
+// Confirmation UI with interactive buttons
+&lt;TextArea 
+  rows={8} 
+  value={workflowXml}
+  onChange={(e) => setWorkflowXml(e.target.value)}
+/&gt;
+        </div>
+    </div>
+
+    <div class="feature-section">
+        <h2>🎨 User Interface</h2>
+        <p>The confirmation interface features:</p>
+        <ul>
+            <li><strong>Prominent Blue Box</strong> - Clearly distinguishes the confirmation area</li>
+            <li><strong>Editable Text Area</strong> - 8 rows with monospace font for easy reading</li>
+            <li><strong>Intuitive Icons</strong> - Visual cues for each action (✅✏️❌)</li>
+            <li><strong>Color Coding</strong> - Green for confirm, yellow for modify, red for cancel</li>
+            <li><strong>Responsive Layout</strong> - Adapts to different screen sizes</li>
+        </ul>
+    </div>
+
+    <div class="feature-section">
+        <h2>🧪 Testing Instructions</h2>
+        <ol>
+            <li>Open the Chrome extension and navigate to the sidebar</li>
+            <li>Enter a test task like: <code>"Click on the first link on this page"</code></li>
+            <li>Click "Run" and wait for the AI plan to appear</li>
+            <li>Review the generated plan in the blue confirmation box</li>
+            <li>Test all three action buttons:
+                <ul>
+                    <li>Modify the plan text and click "Apply Changes"</li>
+                    <li>Click "Confirm & Execute" to proceed</li>
+                    <li>Click "Cancel" to stop the task</li>
+                </ul>
+            </li>
+            <li>Verify that the logs show appropriate messages for each action</li>
+        </ol>
+    </div>
+
+    <div class="feature-section">
+        <h2>🔗 Interactive Elements for Testing</h2>
+        <p>Use these elements to test the agent's capabilities:</p>
+        
+        <div style="margin: 20px 0;">
+            <a href="#" class="button-demo" onclick="alert('Link 1 clicked!')">Test Link 1</a>
+            <a href="#" class="button-demo" onclick="alert('Link 2 clicked!')">Test Link 2</a>
+            <a href="#" class="button-demo" onclick="alert('Link 3 clicked!')">Test Link 3</a>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <input type="text" placeholder="Test input field" style="padding: 8px; margin: 5px;">
+            <button onclick="alert('Button clicked!')" style="padding: 8px 16px; margin: 5px;">Test Button</button>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <select style="padding: 8px; margin: 5px;">
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+            </select>
+            <input type="checkbox" id="test-checkbox" style="margin: 5px;">
+            <label for="test-checkbox">Test Checkbox</label>
+        </div>
+    </div>
+
+    <div class="feature-section">
+        <h2>✅ Expected Benefits</h2>
+        <ul>
+            <li><strong>Enhanced Control</strong> - Users maintain full control over automated actions</li>
+            <li><strong>Improved Safety</strong> - Prevents accidental or unwanted operations</li>
+            <li><strong>Better Transparency</strong> - Clear visibility into AI decision-making</li>
+            <li><strong>Customization</strong> - Ability to fine-tune AI-generated plans</li>
+            <li><strong>Learning Opportunity</strong> - Users can understand and learn from AI strategies</li>
+        </ul>
+    </div>
+
+    <script>
+        // Add some interactive behavior for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Eko Agent test page loaded successfully!');
+            
+            // Log clicks for testing purposes
+            document.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+                    console.log('Element clicked:', e.target.textContent, e.target);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
